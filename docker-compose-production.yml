@@ -31,8 +31,14 @@ x-environment:
   - SKYLIGHT_AUTHENTICATION
   - SPLITSIO_CLIENT_ID
   - SPLITSIO_CLIENT_SECRET
+  - STRIPE_PUBLISHABLE_KEY
+  - STRIPE_SECRET_KEY
+  - STRIPE_WEBHOOK_SECRET
   - TWITCH_CLIENT_ID
   - TWITCH_CLIENT_SECRET
+  # Env vars that begin with VUE_APP_ are compiled into the Vue frontend code (so must not be secret!)
+  - VUE_APP_STRIPE_SILVER_PLAN_ID=plan_FkumlloOt0lQKn
+  - VUE_APP_STRIPE_GOLD_PLAN_ID=plan_FkumRyxKEblcNt
 x-logging:
   &default-logging
   driver: json-file

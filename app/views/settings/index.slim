@@ -10,7 +10,18 @@
   article
     = render partial: 'username'
     = render partial: 'account_links'
-    = render partial: 'patreon_benefits'
+    #vue-subscriptions.card-deck.mb-3 v-cloak=true
+      - if current_user.subscriptions.active.any?
+        - plan = current_user.subscriptions.active.first
+        plan(
+          plan-type=plan.type
+          plan-id=plan.stripe_plan_id
+          is-subscribed=true
+          current-user-id=current_user.id
+          current-user-email=current_user.email
+        )
+      - if current_user.patron?
+        = render partial: 'patreon_benefits'
     = render partial: 'authorized_applications'
     = render partial: 'my_applications'
     = render partial: 'delete'

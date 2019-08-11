@@ -107,6 +107,10 @@ Rails.application.routes.draw do
   delete '/settings/applications/:application',      to: 'applications#destroy'
   delete '/settings/authorizations/:application',    to: 'authorized_applications#destroy',                      as: :authorization
 
+  get '/subscriptions',         to: 'subscriptions#index',   as: :subscriptions
+  get '/subscriptions/success', to: 'subscriptions#show',    as: :subscription
+  delete '/subscriptions',      to: 'subscriptions#destroy'
+
   get    '/:run/edit',  to: 'runs#edit', as: :edit_run
   get    '/:run',       to: 'runs#show', as: :run, format: false # disable format so requests like /ads.txt don't render a run
   get    '/:run/stats', to: redirect('/%{run}') # to support old links floating around the internet; RIP stats page
@@ -125,6 +129,7 @@ Rails.application.routes.draw do
     namespace :webhooks do
       post '/patreon', to: 'patreon#create'
       post '/parse',   to: 'parse#create'
+      post '/stripe',  to: 'stripe#create'
     end
 
     namespace :v4 do

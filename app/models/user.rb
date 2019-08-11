@@ -30,6 +30,8 @@ class User < ApplicationRecord
   has_one :google,  dependent: :destroy, class_name: 'GoogleUser'
   has_one :srdc,    dependent: :destroy, class_name: 'SpeedrunDotComUser'
 
+  has_many :subscriptions, dependent: :destroy
+
   has_many :applications,  class_name: 'Doorkeeper::Application', dependent: :destroy, foreign_key: :owner_id,
                            inverse_of: 'owner'
   has_many :access_grants, class_name: 'Doorkeeper::AccessGrant', dependent: :destroy, foreign_key: :resource_owner_id

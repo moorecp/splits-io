@@ -73,8 +73,25 @@
                   #playtime-chart
 - else
   article: .col-md-6.offset-md-3: .card
-    .card-body: i Become a tier-3 patron to compare videos, charts, and splits.
+    .card-body
+      i Become a tier-3 supporter to compare videos, charts, and splits.
+      h4 $6 / month for Splits.io Gold
     .card-footer
-      a.btn.btn-patreon.float-right href=patreon_url
-        => icon('fab', 'patreon')
-        | Become a tier-3 patron
+      .float-right
+        a.btn.btn-primary.mr-2 data={toggle: :modal, target: '#stripe'}
+          => icon('fab', 'stripe-s')
+          ' Pay with Stripe
+        #stripe.modal.fade tabindex='-1' role='dialog' aria={labelledby: 'stripe-label', hidden: true}
+          .modal-dialog role='document'
+            .modal-content
+              .modal-header.bg-primary
+                h5.text-light Pay with Stripe
+              .modal-body.bg-dark
+                .form-group
+                  label.text-light for='card-element' Credit or debit card
+                  #card-element.form-control style='height: 2.4em; padding-top: .7em'
+              .modal-footer.bg-dark
+                  button.btn.btn-primary.float-right Submit payment
+        a.btn.btn-patreon href=patreon_url
+          => icon('fab', 'patreon')
+          | Become a patron
