@@ -23,16 +23,11 @@ class SubscriptionsController < ApplicationController
         subscription.stripe_subscription_id,
         cancel_at_period_end: true,
       )
-
-      redirect_to(
-        root_path,
-        notice: 'Subscription set to not renew. Your subscription will appear active until your next billing renew date, when it will be canceled instead of charged.'
-      )
     end
+    # Set canceled_at now; ended_at will be set by a Stripe webhook when the month runs out
+    @subscriptions.update_all(canceled_at: Time.now.utc)
 
-    # We don't actually revoke the subscription on our end here, because the user might have time left in their month.
-    # We will revoke those features via Stripe's customer.subscription.deleted webhook, which only fires at the end of
-    # the billing period after cancellation.
+    head :no_content
   end
 
   private

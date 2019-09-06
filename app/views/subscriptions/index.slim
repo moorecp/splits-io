@@ -24,6 +24,7 @@
         :is-subscribed=(current_user && current_user.subscriptions.active.silver.any? ? 'true' : 'false')
         current-user-id=current_user.try(:id)
         current-user-email=current_user.try(:email)
+        :is-canceled=(current_user && current_user.subscriptions.active.silver.canceled.any? ? 'true' : 'false')
       )
       plan(
         plan-type='gold'
@@ -32,6 +33,7 @@
         :is-subscribed=(current_user && current_user.subscriptions.active.gold.any? ? 'true' : 'false')
         current-user-id=current_user.try(:id)
         current-user-email=current_user.try(:email)
+        :is-canceled=(current_user && current_user.subscriptions.active.gold.canceled.any? ? 'true' : 'false')
       )
     .card-deck.mb-3.text-center
       .card.mb-4.text-center

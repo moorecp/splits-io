@@ -19,14 +19,23 @@
       <button v-if="!currentUserId" class="btn btn-lg btn-block btn-light disabled" type="button" disabled>
         Sign in to subscribe
       </button>
-      <button v-if="currentUserId && !isSubscribed" class="btn btn-lg btn-block btn-light" type="button" @click="subscribe" :disabled='loading === true'>
+      <button v-if="currentUserId && !isSubscribed" class="btn btn-lg btn-block btn-light" type="button" @click="subscribe" :disabled='loading'>
         <template v-if='loading'><spinner /></template>
         <template v-else>Subscribe</template>
         <div id="error-message"></div>
       </button>
-      <button v-if="currentUserId && isSubscribed" class="btn btn-lg btn-block btn-outline-light" type='button' @click="cancel">
+      <button v-if="currentUserId && isSubscribed && !isCanceled" class="btn btn-lg btn-block btn-outline-light" type='button' @click="cancel" :disabled="loading">
         <template v-if='loading'><spinner /></template>
         <template v-else>Cancel</template>
+      </button>
+      <button
+        v-if="currentUserId && isSubscribed && isCanceled"
+        class="btn btn-lg btn-block btn-outline-light disabled"
+        type="button"
+        v-tippy
+        style="cursor: default"
+        title="Your subscription has been canceled. It will last until the end of your billing cycle.">
+        Canceled
       </button>
     </div>
   </div>
@@ -85,7 +94,10 @@ export default {
     cancel: function() {
       this.loading = true
 
-      fetch('/subscriptions', {method: 'DELETE'}).then(Turbolinks.visit('/'))
+      fetch('/subscriptions', {method: 'DELETE'}).then(() => {
+        this.isCanceled = true
+        this.loading = false
+      })
     },
     subscribe: function() {
       const stripe = Stripe(this.stripePublishableKey)
@@ -106,6 +118,6 @@ export default {
     }
   },
   name: 'plan',
-  props: ['plan-type', 'plan-id', 'stripe-publishable-key', 'is-subscribed', 'current-user-id', 'current-user-email'],
+  props: ['plan-type', 'plan-id', 'stripe-publishable-key', 'is-subscribed', 'is-canceled', 'current-user-id', 'current-user-email'],
 }
 </script>
