@@ -73,5 +73,5 @@ Rails.application.configure do
   config.stripe.secret_key = ENV['STRIPE_PUBLISHABLE_KEY']
   config.stripe.publishable_key = ENV['STRIPE_SECRET_KEY']
 
-  config.hosts << "2a354e51.ngrok.io"
+  config.hosts << /.+\.ngrok.io/
 end
