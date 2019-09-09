@@ -1,40 +1,19 @@
 #vue-subscriptions v-cloak=true
   .pricing-header.px-3.py-3.pt-md-5.pb-md-4.mx-auto.text-center style='max-width: 700px'
-    h1.display-4 Subscribe
+    h1.display-4.text-monospace Splits.io Noclip
     p.lead
-      ' Get access to the best features of Splits.io and help us continue to work on building the best speedrunning
+      ' Get access to premium features of Splits.io and help us continue to work on building the best speedrunning
       ' analytics system in the universe 🍔🌌
   .container
-    .card-deck.mb-3.text-center
-      .card
-        .card-header
-          h4.my-0.font-weight-normal Bronze
-        .card-body
-          h1.card-title.pricing-card-title.text-muted
-            ' Free
-          ul.list-unstyled.mt-3.mb-4
-            li Basic analytics
-            li Ad-supported
-        .card-footer
-          button.btn.btn-lg.btn-block.btn-outline-light.disabled disabled=true type='button' Active
-      plan(
-        plan-type='silver'
-        plan-id=ENV['STRIPE_SILVER_PLAN_ID']
-        stripe-publishable-key=ENV['STRIPE_PUBLISHABLE_KEY']
-        :is-subscribed=(current_user && current_user.subscriptions.active.silver.any? ? 'true' : 'false')
-        current-user-id=current_user.try(:id)
-        current-user-email=current_user.try(:email)
-        :is-canceled=(current_user && current_user.subscriptions.active.silver.canceled.any? ? 'true' : 'false')
-      )
-      plan(
-        plan-type='gold'
-        plan-id=ENV['STRIPE_GOLD_PLAN_ID']
-        stripe-publishable-key=ENV['STRIPE_PUBLISHABLE_KEY']
-        :is-subscribed=(current_user && current_user.subscriptions.active.gold.any? ? 'true' : 'false')
-        current-user-id=current_user.try(:id)
-        current-user-email=current_user.try(:email)
-        :is-canceled=(current_user && current_user.subscriptions.active.gold.canceled.any? ? 'true' : 'false')
-      )
+    subscription(
+      current-user-id=current_user.id
+      current-user-email=current_user.email
+      current-plan=(current_user.subscriptions.active.first.try(:type) || 'none')
+      current-plan-status=(current_user.subscriptions.active.first.try(:canceled?) ? 'canceled' : 'active')
+      stripe-publishable-key=ENV['STRIPE_PUBLISHABLE_KEY']
+      silver-plan-id=ENV['STRIPE_SILVER_PLAN_ID']
+      gold-plan-id=ENV['STRIPE_SILVER_PLAN_ID']
+    )
     .card-deck.mb-3.text-center
       .card.mb-4.text-center
         .card-header
@@ -48,7 +27,7 @@
             li Regular emails or meetings with new finds
             li Includes Gold tier
         .card-footer
-          a.btn.btn-lg.btn-block.btn-light href='mailto:ben@splits.io?Splits.io esports tier' Contact us
+          a.btn.btn-lg.btn-block.btn-primary href='mailto:ben@splits.io?Splits.io esports tier' Contact us
       .card.mb-4.text-center
         .card-header
           h4.my-0.font-weight-normal Organization
@@ -60,7 +39,7 @@
             li Custom-built to your specifications
             li Fuel your commentary, stream layout, or players
         .card-footer
-          a.btn.btn-lg.btn-block.btn-light href='mailto:ben@splits.io?subject=Splits.io custom analytics' Contact us
+          a.btn.btn-lg.btn-block.btn-primary href='mailto:ben@splits.io?subject=Splits.io custom analytics' Contact us
     .card.mb-4.text-center
       .card-body
         a href=patreon_url Looking for Patreon?

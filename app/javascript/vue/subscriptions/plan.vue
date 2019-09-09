@@ -5,8 +5,13 @@
     </div>
     <div class="card-body">
       <h1 class="card-title pricing-card-title">
-        ${{(priceCents || 0) / 100}}
-        <small class="text-muted">/ mo</small>
+        <template v-if="priceCents === 0">
+          Free
+        </template>
+        <template v-else>
+          ${{(priceCents || 0) / 100}}
+          <small class="text-muted">/ mo</small>
+        </template>
       </h1>
       <ul class="list-unstyled mt-3 mb-4">
         <li v-for='feature in features'>
@@ -16,45 +21,31 @@
       </ul>
     </div>
     <div class="card-footer">
-      <button v-if="!currentUserId" class="btn btn-lg btn-block btn-light disabled" type="button" disabled>
-        Sign in to subscribe
-      </button>
-      <button v-if="currentUserId && !isSubscribed" class="btn btn-lg btn-block btn-light" type="button" @click="subscribe" :disabled='loading'>
-        <template v-if='loading'><spinner /></template>
-        <template v-else>Subscribe</template>
-        <div id="error-message"></div>
-      </button>
-      <button v-if="currentUserId && isSubscribed && !isCanceled" class="btn btn-lg btn-block btn-outline-light" type='button' @click="cancel" :disabled="loading">
-        <template v-if='loading'><spinner /></template>
-        <template v-else>Cancel</template>
-      </button>
-      <button
-        v-if="currentUserId && isSubscribed && isCanceled"
-        class="btn btn-lg btn-block btn-outline-light disabled"
-        type="button"
-        v-tippy
-        style="cursor: default"
-        title="Your subscription has been canceled. It will last until the end of your billing cycle.">
-        Canceled
-      </button>
+      <subscribe-button :plan-id='id' :current-user='currentUser' :action='action' :price-cents='priceCents' :stripe-publishable-key='stripePublishableKey'>
+      </subscribe-button>
     </div>
   </div>
 </template>
 
 <script>
-import spinner from '../spinner.vue'
+import subscribeButton from './subscribe-button.vue'
 
 export default {
-  components: { spinner },
+  components: { subscribeButton },
   computed: {
     features: function() {
-      switch(this.planType) {
-        case 'silver':
+      switch(this.name) {
+        case 'Bronze':
+          return [
+            {description: 'Basic analytics'},
+            {description: 'Ad-supported'},
+          ]
+        case 'Silver':
           return [
             {description: 'Disable ads'},
             {description: 'Predict when you\'ll PB'},
           ]
-        case 'gold':
+        case 'Gold':
           return [
             {description: 'Disable ads'},
             {description: 'Predict when you\'ll PB'},
@@ -68,56 +59,8 @@ export default {
           return 'Unknown plan'
       }
     },
-    name: function() {
-      switch(this.planType) {
-        case 'silver':
-          return 'Silver'
-        case 'gold':
-          return 'Gold'
-        default:
-          return 'Unknown plan'
-      }
-    },
-    priceCents: function() {
-      switch(this.planType) {
-        case 'silver':
-          return 400
-        case 'gold':
-          return 600
-      }
-    }
-  },
-  data: () => ({
-    loading: false,
-  }),
-  methods: {
-    cancel: function() {
-      this.loading = true
-
-      fetch('/subscriptions', {method: 'DELETE'}).then(() => {
-        this.isCanceled = true
-        this.loading = false
-      })
-    },
-    subscribe: function() {
-      const stripe = Stripe(this.stripePublishableKey)
-
-      this.loading = true
-      stripe.redirectToCheckout({
-        items: [{plan: this.planId, quantity: 1}],
-        successUrl: `${location.origin}/subscriptions/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${location.origin}/subscriptions/cancel`,
-        clientReferenceId: this.currentUserId,
-        customerEmail: this.currentUserEmail,
-      }).then(function (result) {
-        if (result.error) {
-          var displayError = document.getElementById('error-message')
-          displayError.textContent = result.error.message;
-        }
-      })
-    }
   },
   name: 'plan',
-  props: ['plan-type', 'plan-id', 'stripe-publishable-key', 'is-subscribed', 'is-canceled', 'current-user-id', 'current-user-email'],
+  props: ['name', 'id', 'price-cents', 'current-user', 'stripe-publishable-key', 'action'],
 }
 </script>

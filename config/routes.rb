@@ -107,9 +107,10 @@ Rails.application.routes.draw do
   delete '/settings/applications/:application',      to: 'applications#destroy'
   delete '/settings/authorizations/:application',    to: 'authorized_applications#destroy',                      as: :authorization
 
-  get '/subscriptions',         to: 'subscriptions#index',   as: :subscriptions
-  get '/subscriptions/success', to: 'subscriptions#show',    as: :subscription
-  delete '/subscriptions',      to: 'subscriptions#destroy'
+  get   '/subscriptions',         to: 'subscriptions#index',   as: :subscriptions
+  get   '/subscriptions/success', to: 'subscriptions#show',    as: :subscription
+  patch '/subscriptions',         to: 'subscriptions#update'
+  delete '/subscriptions',        to: 'subscriptions#destroy'
 
   get    '/:run/edit',  to: 'runs#edit', as: :edit_run
   get    '/:run',       to: 'runs#show', as: :run, format: false # disable format so requests like /ads.txt don't render a run

@@ -4,7 +4,7 @@ import Vue from 'vue/dist/vue.esm'
 import TurbolinksAdapter from 'vue-turbolinks'
 import VueTippy from 'vue-tippy'
 
-import plan from '../vue/subscriptions/plan.vue'
+import subscription from '../vue/subscriptions/subscription.vue'
 
 Vue.use(TurbolinksAdapter)
 Vue.use(VueTippy)
@@ -16,6 +16,6 @@ document.addEventListener('turbolinks:load', () => {
 
   const app = new Vue({
     el: '#vue-subscriptions',
-    components: { plan },
+    components: { subscription },
   })
 })

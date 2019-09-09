@@ -5,7 +5,7 @@ class Api::Webhooks::StripeController < ApplicationController
   def create
     case @event.type
     when 'checkout.session.completed'
-      @subscriptions.update_all(canceled_at: Time.now.utc)
+      @subscriptions.cancel_all!
       Subscription.create(
         user_id: @event.data.object.client_reference_id,
         stripe_session_id: @event.data.object.id,
@@ -15,7 +15,7 @@ class Api::Webhooks::StripeController < ApplicationController
         stripe_customer_id: @event.data.object.customer,
       )
     when 'customer.subscription.deleted'
-      @subscriptions.update_all(canceled_at: Time.now.utc)
+      @subscriptions.update_all(ended_at: Time.now.utc)
     end
   end
 
@@ -30,6 +30,6 @@ class Api::Webhooks::StripeController < ApplicationController
   end
 
   def set_subscriptions
-    @subscriptions = Subscription.where(stripe_customer_id: @event.data.object.customer)
+    @subscriptions = Subscription.where(user_id: @event.data.object.client_reference_id)
   end
 end
