@@ -17,7 +17,7 @@ html
     = render partial: 'application/favicon'
     = render partial: 'shared/twitter_card'
     = content_for(:head)
-  body data-controller=controller_name data-action=action_name
+  body data-controller=controller_name data-action=action_name class=('subscribe' if controller_name == 'subscriptions')
     = Gon::Base.render_data
     #dropzone
       #dropzone-overlay.header style='border: none' data-turbolinks-permanent=true
